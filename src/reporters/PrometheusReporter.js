@@ -42,13 +42,6 @@ class PrometheusReporter {
   }
 
   /**
-  * @method clear
-  */
-  clear () {
-    return this._registry.clear()
-  }
-
-  /**
   * @method reportFinish
   * @param {Span} span
   */

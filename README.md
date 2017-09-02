@@ -4,6 +4,10 @@
 
 Exports metrics via OpenTracing instrumentation and Prometheus reporter.
 
+## Reporters
+
+- [Prometheus](https://prometheus.io/)
+
 ## Getting started
 
 ```js
@@ -56,6 +60,8 @@ app.get('/metrics', (req, res) => {
 ```
 
 ## Prometheus Reporter
+
+Exposes metrics in Prometheus format.
 
 ### Sample metrics output
 
