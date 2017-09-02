@@ -68,7 +68,7 @@ Exposes metrics in Prometheus format.
 
 ### Sample metrics output
 
-Two distributed services communicates over the network.
+Two distributed services communicate over the network.
 
 ```
 # HELP operation_duration_seconds Duration of operations in second
