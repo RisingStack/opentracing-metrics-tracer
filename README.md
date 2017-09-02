@@ -2,8 +2,8 @@
 
 [![Build Status](https://travis-ci.org/RisingStack/opentracing-metrics-tracer.svg?branch=master)](https://travis-ci.org/RisingStack/opentracing-metrics-tracer)  
 
-Exports metrics via OpenTracing instrumentation and reporters like Prometheus.  
-It's capable to measure cross-process operations.  
+Exports cross-process metrics via OpenTracing instrumentation to reporters: Prometheus.  
+It's capable to measure operation characteristics in a distributed system like microservices.  
 
 It also makes possible to reverse engineer the infrastructure topology as we know the initiators
 
