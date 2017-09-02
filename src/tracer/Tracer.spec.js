@@ -9,9 +9,10 @@ const Tracer = require('./Tracer')
 describe('tracer/Tracer', () => {
   describe('#constructor', () => {
     it('should create a tracer', () => {
-      const tracer = new Tracer('service-key')
+      const tracer = new Tracer('service-key', ['reporter'])
 
       expect(tracer._serviceKey).to.be.equal('service-key')
+      expect(tracer._reporters).to.be.eql(['reporter'])
     })
   })
 
@@ -150,6 +151,24 @@ describe('tracer/Tracer', () => {
       const spanContextExtracted = tracer.extract(FORMAT_BINARY, {})
 
       expect(spanContextExtracted).to.be.eql(null)
+    })
+  })
+
+  describe('#reportFinish', () => {
+    it('should call reporters', function () {
+      const reporter1 = {
+        reportFinish: this.sandbox.spy()
+      }
+      const reporter2 = {
+        reportFinish: this.sandbox.spy()
+      }
+      const tracer = new Tracer('service-key', [reporter1, reporter2])
+      const span = tracer.startSpan('my-operation')
+
+      tracer.reportFinish(span)
+
+      expect(reporter1.reportFinish).to.be.calledWith(span)
+      expect(reporter2.reportFinish).to.be.calledWith(span)
     })
   })
 })

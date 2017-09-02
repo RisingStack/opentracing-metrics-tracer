@@ -71,6 +71,8 @@ class Span {
     assert(finishTime === undefined || typeof finishTime === 'number', 'finishTime is required')
 
     this._duration = (finishTime || Date.now()) - this._startTime
+
+    this._tracer.reportFinish(this)
   }
 
   /**

@@ -55,16 +55,19 @@ describe('tracer/Span', () => {
   })
 
   describe('#finish', () => {
-    it('should calculate duration in milliseconds', () => {
+    it('should calculate duration in milliseconds', function () {
       const tracer = new Tracer('service-1')
       const spanContext = new SpanContext('service-1')
       const span = new Span(tracer, 'operation', spanContext)
+
+      this.sandbox.spy(tracer, 'reportFinish')
 
       clock.tick(150)
 
       span.finish()
 
       expect(span._duration).to.be.equal(150)
+      expect(tracer.reportFinish).to.be.calledWith(span)
     })
 
     it('should use passed finishTime', () => {

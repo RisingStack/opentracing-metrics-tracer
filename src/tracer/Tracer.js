@@ -16,6 +16,17 @@ const CARRIER_KEY_SPAN_IDS = 'metrics-tracer-span-id'
 */
 class Tracer {
   /**
+  * @constructor
+  * @param {String} serviceKey
+  * @param {Array} reporters
+  * @returns {Tracer}
+  */
+  constructor (serviceKey, reporters = []) {
+    this._serviceKey = serviceKey
+    this._reporters = reporters
+  }
+
+  /**
   * @method extract
   * @param {String} operationName - the name of the operation
   * @param {Object} options
@@ -156,11 +167,11 @@ class Tracer {
   }
 
   /**
-  * @constructor
-  * @returns {Tracer}
+  * @method reportFinish
+  * @param {Span} span
   */
-  constructor (serviceKey) {
-    this._serviceKey = serviceKey
+  reportFinish (span) {
+    this._reporters.forEach((reporter) => reporter.reportFinish(span))
   }
 }
 
