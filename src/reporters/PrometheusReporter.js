@@ -126,4 +126,6 @@ class PrometheusReporter {
   }
 }
 
+PrometheusReporter.Prometheus = Prometheus
+
 module.exports = PrometheusReporter
