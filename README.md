@@ -89,8 +89,8 @@ Exposes metrics in Prometheus format via [prom-client](https://github.com/siimon
 
 #### Metrics
 
-- operation_duration_seconds
-- http_request_duration_seconds
+- [operation_duration_seconds](#operation_duration_seconds)
+- [http_request_duration_seconds](#http_request_duration_seconds)
 
 ##### operation_duration_seconds
 
