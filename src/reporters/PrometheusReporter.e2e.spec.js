@@ -17,6 +17,15 @@ describe('e2e: PrometheusReporter', () => {
     clock.restore()
   })
 
+  it('should have operation metrics initialized', () => {
+    const reporter = new PrometheusReporter()
+
+    expect(reporter.metrics()).to.be.equal(dedent`
+      # HELP operation_duration_seconds Duration of operations in second
+      # TYPE operation_duration_seconds histogram\n
+    `)
+  })
+
   it('should have operation metrics', () => {
     const reporter = new PrometheusReporter()
     const tracer = new Tracer('my-service', [reporter])
