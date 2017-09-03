@@ -5,11 +5,12 @@ const Prometheus = require('prom-client')
 const { Tags } = require('opentracing')
 const Span = require('../tracer/Span')
 
-const DURATION_BUCKETS = [0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2.5, 5, 10]
-const NAME_OPERATION_DURATION_SECONDS = 'operation_duration_seconds'
-const NAME_HTTP_REQUEST_DURATION_SECONDS = 'http_request_duration_seconds'
+const DURATION_HISTOGRAM_BUCKETS = [0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2.5, 5, 10]
+const METRICS_NAME_OPERATION_DURATION_SECONDS = 'operation_duration_seconds'
+const METRICS_NAME_HTTP_REQUEST_DURATION_SECONDS = 'http_request_duration_seconds'
 
 /**
+* Observe span events and expose them in Prometheus metrics format
 * @class PrometheusReporter
 */
 class PrometheusReporter {
@@ -25,6 +26,7 @@ class PrometheusReporter {
   }
 
   /**
+  * Returns with the reporter's metrics in Prometheus format
   * @method metrics
   * @returns {Object} metrics
   */
@@ -33,31 +35,45 @@ class PrometheusReporter {
   }
 
   /**
+  * Called by Tracer when a span is finished
   * @method reportFinish
   * @param {Span} span
   */
   reportFinish (span) {
     assert(span instanceof Span, 'span is required')
 
-    const spanContext = span.context()
-
     // Operation metrics
-    this._metricsOperationDurationSeconds()
-      .labels(spanContext._parentServiceKey || '', span._operationName)
-      .observe(span._duration / 1000)
+    this._reportOperationFinish(span)
 
     // HTTP Request
     if (span._tags[Tags.HTTP_URL] || span._tags[Tags.HTTP_METHOD] || span._tags[Tags.HTTP_STATUS_CODE]) {
-      this._reportFinishHttpRequest(span)
+      this._reportHttpRequestFinish(span)
     }
   }
 
   /**
-  * @method _reportFinishHttpRequest
+  * Observe operation metrics
+  * @method _reportOperationFinish
   * @private
   * @param {Span} span
   */
-  _reportFinishHttpRequest (span) {
+  _reportOperationFinish (span) {
+    assert(span instanceof Span, 'span is required')
+
+    const spanContext = span.context()
+
+    this._metricsOperationDurationSeconds()
+      .labels(spanContext._parentServiceKey || '', span._operationName)
+      .observe(span._duration / 1000)
+  }
+
+  /**
+  * Observe HTTP request metrics
+  * @method _reportHttpRequestFinish
+  * @private
+  * @param {Span} span
+  */
+  _reportHttpRequestFinish (span) {
     assert(span instanceof Span, 'span is required')
 
     this._metricshttpRequestDurationSeconds()
@@ -66,19 +82,20 @@ class PrometheusReporter {
   }
 
   /**
+  * Singleton to get operation duration metrics
   * @method _metricsOperationDurationSeconds
   * @private
   * @return {Prometheus.Histogram} operationDurationSeconds
   */
   _metricsOperationDurationSeconds () {
-    let operationDurationSeconds = this._registry.getSingleMetric(NAME_OPERATION_DURATION_SECONDS)
+    let operationDurationSeconds = this._registry.getSingleMetric(METRICS_NAME_OPERATION_DURATION_SECONDS)
 
     if (!operationDurationSeconds) {
       operationDurationSeconds = new Prometheus.Histogram({
-        name: NAME_OPERATION_DURATION_SECONDS,
+        name: METRICS_NAME_OPERATION_DURATION_SECONDS,
         help: 'Duration of operations in second',
         labelNames: ['parent_service', 'name'],
-        buckets: DURATION_BUCKETS,
+        buckets: DURATION_HISTOGRAM_BUCKETS,
         registers: [this._registry]
       })
     }
@@ -87,19 +104,20 @@ class PrometheusReporter {
   }
 
   /**
+  * Singleton to get HTTP request duration metrics
   * @method _metricshttpRequestDurationSeconds
   * @private
   * @return {Prometheus.Histogram} httpRequestDurationSeconds
   */
   _metricshttpRequestDurationSeconds () {
-    let httpRequestDurationSeconds = this._registry.getSingleMetric(NAME_HTTP_REQUEST_DURATION_SECONDS)
+    let httpRequestDurationSeconds = this._registry.getSingleMetric(METRICS_NAME_HTTP_REQUEST_DURATION_SECONDS)
 
     if (!httpRequestDurationSeconds) {
       httpRequestDurationSeconds = new Prometheus.Histogram({
-        name: NAME_HTTP_REQUEST_DURATION_SECONDS,
+        name: METRICS_NAME_HTTP_REQUEST_DURATION_SECONDS,
         help: 'Duration of HTTP requests in second',
         labelNames: ['method', 'code'],
-        buckets: DURATION_BUCKETS,
+        buckets: DURATION_HISTOGRAM_BUCKETS,
         registers: [this._registry]
       })
     }
