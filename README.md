@@ -64,7 +64,7 @@ app.get('/metrics', (req, res) => {
 
 ### Example
 
-See [example directory](/example).
+See [example server](/example/server.js).
 
 ```sh
 node example/server
