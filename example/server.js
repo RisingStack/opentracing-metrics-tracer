@@ -10,21 +10,21 @@ const PORT = process.env.PORT || 3000
 
 const server = http.createServer((req, res) => {
   // Instrumentation
-  const span = metricsTracer.startSpan('http_request', {
+  const requestSpan = metricsTracer.startSpan('http_request', {
     childOf: metricsTracer.extract(FORMAT_HTTP_HEADERS, req.headers)
   })
   const headers = {}
 
-  metricsTracer.inject(span, FORMAT_HTTP_HEADERS, headers)
+  metricsTracer.inject(requestSpan, FORMAT_HTTP_HEADERS, headers)
 
-  span.setTag(Tags.HTTP_URL, req.url)
-  span.setTag(Tags.HTTP_METHOD, req.method || 'GET')
-  span.setTag(Tags.HTTP_STATUS_CODE, 200)
-  span.setTag(Tags.SPAN_KIND_RPC_CLIENT, true)
+  requestSpan.setTag(Tags.HTTP_URL, req.url)
+  requestSpan.setTag(Tags.HTTP_METHOD, req.method || 'GET')
+  requestSpan.setTag(Tags.HTTP_STATUS_CODE, 200)
+  requestSpan.setTag(Tags.SPAN_KIND_RPC_CLIENT, true)
 
   // Dummy router: GET /metrics
   if (req.url === '/metrics') {
-    span.finish()
+    requestSpan.finish()
 
     res.writeHead(200, {
       'Content-Type': MetricsTracer.PrometheusReporter.Prometheus.register.contentType
@@ -33,9 +33,14 @@ const server = http.createServer((req, res) => {
     return
   }
 
-  // My operation like DB access
+  // My child operation like DB access
+  const operationSpan = metricsTracer.startSpan('my_operation', {
+    childOf: requestSpan
+  })
+
   setTimeout(() => {
-    span.finish()
+    operationSpan.finish()
+    requestSpan.finish()
 
     res.writeHead(200, headers)
     res.end('Ok')
