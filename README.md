@@ -14,9 +14,9 @@ It also makes possible to reverse engineer the infrastructure topology as we kno
 ## Getting started
 
 ```js
-const { Prometheus, PrometheusReporter, Tracer } = require('@risingstack/opentracing-metrics-tracer')
-const prometheusReporter = new PrometheusReporter()
-const metricsTracer = new Tracer('my-service', [prometheusReporter])
+const MetricsTracer = require('@risingstack/opentracing-metrics-tracer')
+const prometheusReporter = new MetricsTracer.PrometheusReporter()
+const metricsTracer = new MetricsTracer('my-service', [prometheusReporter])
 
 // Instrument
 const span = metricsTracer.startSpan('my-operation')
@@ -24,7 +24,7 @@ span.finish()
 ...
 
 app.get('/metrics', (req, res) => {
-  res.set('Content-Type', Prometheus.register.contentType)
+  res.set('Content-Type', MetricsTracer.PrometheusReporter.Prometheus.register.contentType)
   res.end(prometheusReporter.metrics())
 })
 ```
@@ -35,9 +35,9 @@ Check out: https://github.com/RisingStack/opentracing-auto
 
 ```js
 // Prometheus metrics tracer
-const { Prometheus, PrometheusReporter, Tracer } = require('@risingstack/opentracing-metrics-tracer')
-const prometheusReporter = new PrometheusReporter()
-const metricsTracer = new Tracer('my-service', [prometheusReporter])
+const MetricsTracer = require('@risingstack/opentracing-metrics-tracer')
+const prometheusReporter = new MetricsTracer.PrometheusReporter()
+const metricsTracer = new MetricsTracer('my-service', [prometheusReporter])
 
 // Jaeger tracer (classic distributed tracing)
 const jaeger = require('jaeger-client')
@@ -57,22 +57,22 @@ const express = require('express')
 const app = express()
 
 app.get('/metrics', (req, res) => {
-  res.set('Content-Type', Prometheus.register.contentType)
+  res.set('Content-Type', MetricsTracer.PrometheusReporter.Prometheus.register.contentType)
   res.end(prometheusReporter.metrics())
 })
 ```
 
+### Example
+
+See [example directory](/example).
+
+```sh
+node example/server
+```
+
 ## API
 
-`const { Prometheus, PrometheusReporter, Tracer } = require('@risingstack/opentracing-metrics-tracer')`
-
-### Prometheus
-
-Exposed [prom-client](https://github.com/siimon/prom-client).
-
-### new PrometheusReporter()
-
-Creates a new Prometheus reporter.
+`const Tracer = require('@risingstack/opentracing-metrics-tracer')`
 
 ### new Tracer(serviceKey, [reporter1, reporter2, ...])
 
@@ -80,6 +80,14 @@ Creates a new Prometheus reporter.
 - **reporters** *Array of reporters*, *optional*, *default:* []
 
 [OpenTracing](https://github.com/opentracing/opentracing-javascript) compatible tracer, for the complete API check out the official [documentation](https://opentracing-javascript.surge.sh/).
+
+### new Tracer.PrometheusReporter()
+
+Creates a new Prometheus reporter.
+
+### Tracer.PrometheusReporter.Prometheus
+
+Exposed [prom-client](https://github.com/siimon/prom-client).
 
 ## Reporters
 
