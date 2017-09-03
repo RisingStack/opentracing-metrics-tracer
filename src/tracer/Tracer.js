@@ -12,6 +12,7 @@ const CARRIER_KEY_SPAN_IDS = 'metrics-tracer-span-id'
 
 /**
 * Tracer is the entry-point between the instrumentation API and the tracing implementation
+* Follows the original opentracing API
 * @class Tracer
 */
 class Tracer {
@@ -151,8 +152,8 @@ class Tracer {
       // TODO: log not implemented
     } else {
       let serviceKeysStr = injectedContext._serviceKey
-      if (injectedContext._parentServiceKey) {
-        serviceKeysStr += `:${injectedContext._parentServiceKey}`
+      if (injectedContext.parentServiceKey()) {
+        serviceKeysStr += `:${injectedContext.parentServiceKey()}`
       }
 
       let spanIdsStr = injectedContext._spanId
@@ -165,7 +166,18 @@ class Tracer {
       carrier[Tracer.CARRIER_KEY_SPAN_IDS] = spanIdsStr
     }
   }
+}
 
+Tracer.CARRIER_KEY_SERVICE_KEYS = CARRIER_KEY_SERVICE_KEYS
+Tracer.CARRIER_KEY_TRACE_ID = CARRIER_KEY_TRACE_ID
+Tracer.CARRIER_KEY_SPAN_IDS = CARRIER_KEY_SPAN_IDS
+
+/**
+* Extends the original opentracing API
+* @class MetricsTracer
+* @extends Tracer
+*/
+class MetricsTracer extends Tracer {
   /**
   * @method reportFinish
   * @param {Span} span
@@ -175,8 +187,4 @@ class Tracer {
   }
 }
 
-Tracer.CARRIER_KEY_SERVICE_KEYS = CARRIER_KEY_SERVICE_KEYS
-Tracer.CARRIER_KEY_TRACE_ID = CARRIER_KEY_TRACE_ID
-Tracer.CARRIER_KEY_SPAN_IDS = CARRIER_KEY_SPAN_IDS
-
-module.exports = Tracer
+module.exports = MetricsTracer

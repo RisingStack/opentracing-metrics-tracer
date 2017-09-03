@@ -46,7 +46,7 @@ class PrometheusReporter {
     this._reportOperationFinish(span)
 
     // HTTP Request
-    if (span._tags[Tags.HTTP_URL] || span._tags[Tags.HTTP_METHOD] || span._tags[Tags.HTTP_STATUS_CODE]) {
+    if (span.getTag(Tags.HTTP_URL) || span.getTag(Tags.HTTP_METHOD) || span.getTag(Tags.HTTP_STATUS_CODE)) {
       this._reportHttpRequestFinish(span)
     }
   }
@@ -63,8 +63,8 @@ class PrometheusReporter {
     const spanContext = span.context()
 
     this._metricsOperationDurationSeconds()
-      .labels(spanContext._parentServiceKey || '', span._operationName)
-      .observe(span._duration / 1000)
+      .labels(spanContext.parentServiceKey() || '', span.operationName())
+      .observe(span.duration() / 1000)
   }
 
   /**
@@ -77,8 +77,8 @@ class PrometheusReporter {
     assert(span instanceof Span, 'span is required')
 
     this._metricshttpRequestDurationSeconds()
-      .labels(span._tags[Tags.HTTP_METHOD], span._tags[Tags.HTTP_STATUS_CODE])
-      .observe(span._duration / 1000)
+      .labels(span.getTag(Tags.HTTP_METHOD), span.getTag(Tags.HTTP_STATUS_CODE))
+      .observe(span.duration() / 1000)
   }
 
   /**

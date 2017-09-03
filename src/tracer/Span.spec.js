@@ -97,6 +97,39 @@ describe('tracer/Span', () => {
     })
   })
 
+  describe('#operationName', () => {
+    it('should get operation name', () => {
+      const tracer = new Tracer('service-1')
+      const spanContext = new SpanContext('service-1')
+      const span = new Span(tracer, 'operation', spanContext)
+
+      expect(span.operationName()).to.be.equal('operation')
+    })
+  })
+
+  describe('#duration', () => {
+    it('should get duration', () => {
+      const tracer = new Tracer('service-1')
+      const spanContext = new SpanContext('service-1')
+      const span = new Span(tracer, 'operation', spanContext)
+      clock.tick(100)
+      span.finish()
+
+      expect(span.duration()).to.be.equal(100)
+    })
+  })
+
+  describe('#getTag', () => {
+    it('should get a tag value', () => {
+      const tracer = new Tracer('service-1')
+      const spanContext = new SpanContext('service-1')
+      const span = new Span(tracer, 'operation', spanContext)
+      span.setTag(Tags.HTTP_METHOD, 'GET')
+
+      expect(span.getTag(Tags.HTTP_METHOD)).to.be.equal('GET')
+    })
+  })
+
   describe('#log', () => {
     it('should log', () => {
       const tracer = new Tracer('service-1')

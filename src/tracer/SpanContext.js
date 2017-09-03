@@ -61,6 +61,15 @@ class SpanContext {
     this._baggage[key] = value
     return this
   }
+
+  /**
+  * Returns the parentServiceKey
+  * @method parentServiceKey
+  * @returns {String|Undefined}
+  */
+  parentServiceKey () {
+    return this._parentServiceKey
+  }
 }
 
 module.exports = SpanContext

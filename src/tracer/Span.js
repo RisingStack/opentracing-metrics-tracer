@@ -4,6 +4,7 @@ const assert = require('assert')
 const SpanContext = require('./SpanContext')
 
 /**
+* Follows the original opentracing API
 * @class Span
 */
 class Span {
@@ -168,4 +169,41 @@ class Span {
   }
 }
 
-module.exports = Span
+/**
+* Extends the original opentracing API with getters for reporting
+* @class MetricsSpan
+* @extends Span
+*/
+class MetricsSpan extends Span {
+  /**
+  * Get operation name
+  * @method operationName
+  * @returns {String} operationName
+  */
+  operationName () {
+    return this._operationName
+  }
+
+  /**
+  * Get duration
+  * @method duration
+  * @returns {Number|Undefined} duration
+  */
+  duration () {
+    return this._duration
+  }
+
+  /**
+  * Get a single tag
+  * @method getTag
+  * @param {String} key
+  * @returns {String} value
+  */
+  getTag (key) {
+    assert(typeof key === 'string', 'key is required')
+
+    return this._tags[key]
+  }
+}
+
+module.exports = MetricsSpan

@@ -8,6 +8,7 @@ const SpanContext = require('./SpanContext')
 /**
 * Reference pairs a reference type constant (e.g., REFERENCE_CHILD_OF or REFERENCE_FOLLOWS_FROM)
 * with the SpanContext it points to
+* Follows the original opentracing API
 * @class Reference
 */
 class Reference {

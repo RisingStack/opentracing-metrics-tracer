@@ -46,4 +46,11 @@ describe('tracer/SpanContext', () => {
       expect(spanContext.getBaggageItem('key2')).to.be.equal('value2')
     })
   })
+
+  describe('#parentServiceKey', () => {
+    it('should return with the parentServiceKey', () => {
+      const spanContext = new SpanContext('service-2', 'service-1', 'trace-id', 'span-id', 'parent-span-id')
+      expect(spanContext.parentServiceKey()).to.be.equal('service-1')
+    })
+  })
 })
