@@ -1,3 +1,12 @@
+<a name="1.1.0"></a>
+## 1.1.0 (2017-09-03)
+
+
+#### Features
+
+* **tracer:** public getters for Span and SpanContext ([a5b54c15](git+https://github.com/RisingStack/opentracing-metrics-tracer.git/commit/a5b54c15))
+
+
 <a name="1.0.0"></a>
 ## 1.0.0 (2017-09-02)
 
