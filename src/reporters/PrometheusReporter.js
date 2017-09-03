@@ -20,17 +20,8 @@ class PrometheusReporter {
   constructor () {
     this._registry = new Prometheus.Registry()
 
-    // Operation metrics
-    if (!this._registry.getSingleMetric(NAME_OPERATION_DURATION_SECONDS)) {
-      // eslint-disable-next-line no-new
-      new Prometheus.Histogram({
-        name: NAME_OPERATION_DURATION_SECONDS,
-        help: 'Duration of operations in second',
-        labelNames: ['parent_service', 'name'],
-        buckets: DURATION_BUCKETS,
-        registers: [this._registry]
-      })
-    }
+    // Initialize metrics
+    this._metricsOperationDurationSeconds()
   }
 
   /**
@@ -50,9 +41,8 @@ class PrometheusReporter {
 
     const spanContext = span.context()
 
-    // Operation
-    const operationDurationSeconds = this._registry.getSingleMetric(NAME_OPERATION_DURATION_SECONDS)
-    operationDurationSeconds
+    // Operation metrics
+    this._metricsOperationDurationSeconds()
       .labels(spanContext._parentServiceKey || '', span._operationName)
       .observe(span._duration / 1000)
 
@@ -70,6 +60,38 @@ class PrometheusReporter {
   _reportFinishHttpRequest (span) {
     assert(span instanceof Span, 'span is required')
 
+    this._metricshttpRequestDurationSeconds()
+      .labels(span._tags[Tags.HTTP_METHOD], span._tags[Tags.HTTP_STATUS_CODE])
+      .observe(span._duration / 1000)
+  }
+
+  /**
+  * @method _metricsOperationDurationSeconds
+  * @private
+  * @return {Prometheus.Histogram} operationDurationSeconds
+  */
+  _metricsOperationDurationSeconds () {
+    let operationDurationSeconds = this._registry.getSingleMetric(NAME_OPERATION_DURATION_SECONDS)
+
+    if (!operationDurationSeconds) {
+      operationDurationSeconds = new Prometheus.Histogram({
+        name: NAME_OPERATION_DURATION_SECONDS,
+        help: 'Duration of operations in second',
+        labelNames: ['parent_service', 'name'],
+        buckets: DURATION_BUCKETS,
+        registers: [this._registry]
+      })
+    }
+
+    return operationDurationSeconds
+  }
+
+  /**
+  * @method _metricshttpRequestDurationSeconds
+  * @private
+  * @return {Prometheus.Histogram} httpRequestDurationSeconds
+  */
+  _metricshttpRequestDurationSeconds () {
     let httpRequestDurationSeconds = this._registry.getSingleMetric(NAME_HTTP_REQUEST_DURATION_SECONDS)
 
     if (!httpRequestDurationSeconds) {
@@ -82,9 +104,7 @@ class PrometheusReporter {
       })
     }
 
-    httpRequestDurationSeconds
-      .labels(span._tags[Tags.HTTP_METHOD], span._tags[Tags.HTTP_STATUS_CODE])
-      .observe(span._duration / 1000)
+    return httpRequestDurationSeconds
   }
 }
 
