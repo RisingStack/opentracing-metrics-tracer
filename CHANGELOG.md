@@ -1,3 +1,13 @@
+<a name="1.3.0"></a>
+## 1.3.0 (2017-09-04)
+
+
+#### Features
+
+* **example:** add child operation ([7a260dfa](git+https://github.com/RisingStack/opentracing-metrics-tracer.git/commit/7a260dfa))
+* **reporter:** report parent_service with http_request_duration_seconds ([a06e2bc0](git+https://github.com/RisingStack/opentracing-metrics-tracer.git/commit/a06e2bc0))
+
+
 <a name="1.2.0"></a>
 ## 1.2.0 (2017-09-03)
 
