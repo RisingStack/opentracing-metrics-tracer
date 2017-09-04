@@ -1,3 +1,19 @@
+<a name="2.0.0"></a>
+## 2.0.0 (2017-09-04)
+
+
+#### Bug Fixes
+
+* **reporter:** rename http_request_duration_seconds_bucket to http_request_handler_duration_sec ([b07b5212](git+https://github.com/RisingStack/opentracing-metrics-tracer.git/commit/b07b5212))
+
+
+#### Breaking Changes
+
+* metrics renamed http_request_duration_seconds_bucket to http_request_handler_duration_seconds_bucket
+
+ ([b07b5212](git+https://github.com/RisingStack/opentracing-metrics-tracer.git/commit/b07b5212))
+
+
 <a name="1.3.0"></a>
 ## 1.3.0 (2017-09-04)
 
