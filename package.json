@@ -1,6 +1,6 @@
 {
   "name": "@risingstack/opentracing-metrics-tracer",
-  "version": "1.3.0",
+  "version": "2.0.0",
   "description": "Exports metrics via OpenTracing instrumentation and Prometheus reporter",
   "main": "src/index.js",
   "scripts": {
