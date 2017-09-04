@@ -72,8 +72,6 @@ class Span {
     assert(finishTime === undefined || typeof finishTime === 'number', 'finishTime is required')
 
     this._duration = (finishTime || Date.now()) - this._startTime
-
-    this._tracer.reportFinish(this)
   }
 
   /**
@@ -203,6 +201,17 @@ class MetricsSpan extends Span {
     assert(typeof key === 'string', 'key is required')
 
     return this._tags[key]
+  }
+
+  /**
+  * Sets the end timestamp and finalizes Span state
+  * @method finishTime
+  * @param {Number} [finishTime] - Optional finish time in milliseconds as a Unix timestamp
+  */
+  finish (finishTime) {
+    super.finish(finishTime)
+
+    this._tracer.reportFinish(this)
   }
 }
 
