@@ -61,9 +61,10 @@ class PrometheusReporter {
     assert(span instanceof Span, 'span is required')
 
     const spanContext = span.context()
+    const parentServiceKey = spanContext.parentServiceKey() || ''
 
     this._metricsOperationDurationSeconds()
-      .labels(spanContext.parentServiceKey() || '', span.operationName())
+      .labels(parentServiceKey, span.operationName())
       .observe(span.duration() / 1000)
   }
 
@@ -76,8 +77,11 @@ class PrometheusReporter {
   _reportHttpRequestFinish (span) {
     assert(span instanceof Span, 'span is required')
 
+    const spanContext = span.context()
+    const parentServiceKey = spanContext.parentServiceKey() || ''
+
     this._metricshttpRequestDurationSeconds()
-      .labels(span.getTag(Tags.HTTP_METHOD), span.getTag(Tags.HTTP_STATUS_CODE))
+      .labels(parentServiceKey, span.getTag(Tags.HTTP_METHOD), span.getTag(Tags.HTTP_STATUS_CODE))
       .observe(span.duration() / 1000)
   }
 
@@ -116,7 +120,7 @@ class PrometheusReporter {
       httpRequestDurationSeconds = new Prometheus.Histogram({
         name: METRICS_NAME_HTTP_REQUEST_DURATION_SECONDS,
         help: 'Duration of HTTP requests in second',
-        labelNames: ['method', 'code'],
+        labelNames: ['parent_service', 'method', 'code'],
         buckets: DURATION_HISTOGRAM_BUCKETS,
         registers: [this._registry]
       })

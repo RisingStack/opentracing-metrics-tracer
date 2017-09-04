@@ -27,7 +27,35 @@ describe('reporter/PrometheusReporter', () => {
   })
 
   describe('#reportFinish', () => {
-    it('should observe operation metrics', function () {
+    it('should observe operation metrics without parent', function () {
+      // init
+      const prometheusReporter = new PrometheusReporter()
+      const metricsOperationDurationSeconds = prometheusReporter._metricsOperationDurationSeconds()
+
+      const metricsStub = {
+        observe: this.sandbox.spy()
+      }
+
+      this.sandbox.stub(metricsOperationDurationSeconds, 'labels').callsFake(() => metricsStub)
+
+      // generate data
+      const tracer = new Tracer('service')
+
+      const span = tracer.startSpan('my-operation')
+      clock.tick(100)
+      span.finish()
+
+      prometheusReporter.reportFinish(span)
+
+      // assert
+      expect(metricsOperationDurationSeconds.labels).to.have.callCount(1)
+      expect(metricsOperationDurationSeconds.labels).to.be.calledWith('')
+
+      expect(metricsStub.observe).to.have.callCount(1)
+      expect(metricsStub.observe).to.be.calledWith(0.1)
+    })
+
+    it('should observe operation metrics with parent', function () {
       // init
       const prometheusReporter = new PrometheusReporter()
       const metricsOperationDurationSeconds = prometheusReporter._metricsOperationDurationSeconds()
@@ -64,7 +92,37 @@ describe('reporter/PrometheusReporter', () => {
       expect(metricsStub.observe).to.be.calledWith(0.3)
     })
 
-    it('should observe HTTP request metrics', function () {
+    it('should observe HTTP request metrics without parent', function () {
+      // init
+      const prometheusReporter = new PrometheusReporter()
+      const httpRequestDurationSeconds = prometheusReporter._metricshttpRequestDurationSeconds()
+
+      const metricsStub = {
+        observe: this.sandbox.spy()
+      }
+
+      this.sandbox.stub(httpRequestDurationSeconds, 'labels').callsFake(() => metricsStub)
+
+      // generate data
+      const tracer = new Tracer('service')
+
+      const span = tracer.startSpan('http_request')
+      span.setTag(Tags.HTTP_METHOD, 'GET')
+      span.setTag(Tags.HTTP_STATUS_CODE, 200)
+      clock.tick(100)
+      span.finish()
+
+      prometheusReporter.reportFinish(span)
+
+      // assert
+      expect(httpRequestDurationSeconds.labels).to.have.callCount(1)
+      expect(httpRequestDurationSeconds.labels).to.be.calledWith('', 'GET', 200)
+
+      expect(metricsStub.observe).to.have.callCount(1)
+      expect(metricsStub.observe).to.be.calledWith(0.1)
+    })
+
+    it('should observe HTTP request metrics with parent', function () {
       // init
       const prometheusReporter = new PrometheusReporter()
       const httpRequestDurationSeconds = prometheusReporter._metricshttpRequestDurationSeconds()
@@ -98,7 +156,7 @@ describe('reporter/PrometheusReporter', () => {
 
       // assert
       expect(httpRequestDurationSeconds.labels).to.have.callCount(2)
-      expect(httpRequestDurationSeconds.labels).to.be.calledWith('POST', 201)
+      expect(httpRequestDurationSeconds.labels).to.be.calledWith('parent-service', 'POST', 201)
 
       expect(metricsStub.observe).to.have.callCount(2)
       expect(metricsStub.observe).to.be.calledWith(0.1)

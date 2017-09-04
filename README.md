@@ -133,20 +133,20 @@ Sample output:
 ```
 # HELP http_request_duration_seconds Duration of HTTP requests in second
 # TYPE http_request_duration_seconds histogram
-http_request_duration_seconds_bucket{le="0.005",method="GET",code="200",name="http_request" 0
-http_request_duration_seconds_bucket{le="0.01",method="GET",code="200",name="http_request" 0
-http_request_duration_seconds_bucket{le="0.025",method="GET",code="200",name="http_request" 0
-http_request_duration_seconds_bucket{le="0.05",method="GET",code="200",name="http_request" 0
-http_request_duration_seconds_bucket{le="0.1",method="GET",code="200",name="http_request" 1
-http_request_duration_seconds_bucket{le="0.25",method="GET",code="200",name="http_request" 1
-http_request_duration_seconds_bucket{le="0.5",method="GET",code="200",name="http_request" 2
-http_request_duration_seconds_bucket{le="1",method="GET",code="200",name="http_request" 2
-http_request_duration_seconds_bucket{le="2.5",method="GET",code="200",name="http_request" 2
-http_request_duration_seconds_bucket{le="5",method="GET",code="200",name="http_request" 2
-http_request_duration_seconds_bucket{le="10",method="GET",code="200",name="http_request" 2
-http_request_duration_seconds_bucket{le="+Inf",method="GET",code="200",name="http_request" 2
-http_request_duration_seconds_sum{method="GET",code="200",name="http_request" 0.4
-http_request_duration_seconds_count{method="GET",code="200",name="http_request" 2
+http_request_duration_seconds_bucket{le="0.005",parent_service="my-parent-service",method="GET",code="200",name="http_request" 0
+http_request_duration_seconds_bucket{le="0.01",parent_service="my-parent-service",method="GET",code="200",name="http_request" 0
+http_request_duration_seconds_bucket{le="0.025",parent_service="my-parent-service",method="GET",code="200",name="http_request" 0
+http_request_duration_seconds_bucket{le="0.05",parent_service="my-parent-service",method="GET",code="200",name="http_request" 0
+http_request_duration_seconds_bucket{le="0.1",parent_service="my-parent-service",method="GET",code="200",name="http_request" 1
+http_request_duration_seconds_bucket{le="0.25",parent_service="my-parent-service",method="GET",code="200",name="http_request" 1
+http_request_duration_seconds_bucket{le="0.5",parent_service="my-parent-service",method="GET",code="200",name="http_request" 2
+http_request_duration_seconds_bucket{le="1",parent_service="my-parent-service",method="GET",code="200",name="http_request" 2
+http_request_duration_seconds_bucket{le="2.5",parent_service="my-parent-service",method="GET",code="200",name="http_request" 2
+http_request_duration_seconds_bucket{le="5",parent_service="my-parent-service",method="GET",code="200",name="http_request" 2
+http_request_duration_seconds_bucket{le="10",parent_service="my-parent-service",method="GET",code="200",name="http_request" 2
+http_request_duration_seconds_bucket{le="+Inf",parent_service="my-parent-service",method="GET",code="200",name="http_request" 2
+http_request_duration_seconds_sum{parent_service="my-parent-service",method="GET",code="200",name="http_request" 0.4
+http_request_duration_seconds_count{parent_service="my-parent-service",method="GET",code="200",name="http_request" 2
 ```
 
 ## Future and ideas
