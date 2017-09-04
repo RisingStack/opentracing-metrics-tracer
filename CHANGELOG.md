@@ -1,3 +1,12 @@
+<a name="2.0.1"></a>
+### 2.0.1 (2017-09-04)
+
+
+#### Bug Fixes
+
+* **reporter:** report empty parent service key as "unknown" ([22a89a58](git+https://github.com/RisingStack/opentracing-metrics-tracer.git/commit/22a89a58))
+
+
 <a name="2.0.0"></a>
 ## 2.0.0 (2017-09-04)
 
