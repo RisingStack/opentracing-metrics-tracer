@@ -8,12 +8,25 @@ const Span = require('../tracer/Span')
 const DURATION_HISTOGRAM_BUCKETS = [0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2.5, 5, 10]
 const METRICS_NAME_OPERATION_DURATION_SECONDS = 'operation_duration_seconds'
 const METRICS_NAME_HTTP_REQUEST_HANDLER_DURATION_SECONDS = 'http_request_handler_duration_seconds'
+const LABEL_PARENT_SERVICE_UNKNOWN = 'unknown'
 
 /**
 * Observe span events and expose them in Prometheus metrics format
 * @class PrometheusReporter
 */
 class PrometheusReporter {
+  /**
+  * @static getParentServiceKey
+  * @param {Span} span
+  * @return {String} parentService
+  */
+  static getParentService (span) {
+    const spanContext = span.context()
+    const parentService = spanContext.parentServiceKey() || LABEL_PARENT_SERVICE_UNKNOWN
+
+    return parentService
+  }
+
   /**
   * @constructor
   * @returns {PrometheusReporter}
@@ -61,11 +74,8 @@ class PrometheusReporter {
   _reportOperationFinish (span) {
     assert(span instanceof Span, 'span is required')
 
-    const spanContext = span.context()
-    const parentServiceKey = spanContext.parentServiceKey() || ''
-
     this._metricsOperationDurationSeconds()
-      .labels(parentServiceKey, span.operationName())
+      .labels(PrometheusReporter.getParentService(span), span.operationName())
       .observe(span.duration() / 1000)
   }
 
@@ -78,11 +88,12 @@ class PrometheusReporter {
   _reportHttpRequestFinish (span) {
     assert(span instanceof Span, 'span is required')
 
-    const spanContext = span.context()
-    const parentServiceKey = spanContext.parentServiceKey() || ''
-
     this._metricshttpRequestDurationSeconds()
-      .labels(parentServiceKey, span.getTag(Tags.HTTP_METHOD), span.getTag(Tags.HTTP_STATUS_CODE))
+      .labels(
+        PrometheusReporter.getParentService(span),
+        span.getTag(Tags.HTTP_METHOD),
+        span.getTag(Tags.HTTP_STATUS_CODE)
+      )
       .observe(span.duration() / 1000)
   }
 
@@ -132,5 +143,6 @@ class PrometheusReporter {
 }
 
 PrometheusReporter.Prometheus = Prometheus
+PrometheusReporter.LABEL_PARENT_SERVICE_UNKNOWN = LABEL_PARENT_SERVICE_UNKNOWN
 
 module.exports = PrometheusReporter

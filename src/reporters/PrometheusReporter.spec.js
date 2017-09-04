@@ -49,7 +49,7 @@ describe('reporter/PrometheusReporter', () => {
 
       // assert
       expect(metricsOperationDurationSeconds.labels).to.have.callCount(1)
-      expect(metricsOperationDurationSeconds.labels).to.be.calledWith('')
+      expect(metricsOperationDurationSeconds.labels).to.be.calledWith(PrometheusReporter.LABEL_PARENT_SERVICE_UNKNOWN)
 
       expect(metricsStub.observe).to.have.callCount(1)
       expect(metricsStub.observe).to.be.calledWith(0.1)
@@ -117,7 +117,8 @@ describe('reporter/PrometheusReporter', () => {
 
       // assert
       expect(httpRequestDurationSeconds.labels).to.have.callCount(1)
-      expect(httpRequestDurationSeconds.labels).to.be.calledWith('', 'GET', 200)
+      expect(httpRequestDurationSeconds.labels)
+        .to.be.calledWith(PrometheusReporter.LABEL_PARENT_SERVICE_UNKNOWN, 'GET', 200)
 
       expect(metricsStub.observe).to.have.callCount(1)
       expect(metricsStub.observe).to.be.calledWith(0.1)

@@ -38,7 +38,7 @@ describe('e2e: PrometheusReporter', () => {
     clock.tick(300)
     span2.finish()
 
-    const labelStr = 'parent_service="",name="my-operation"'
+    const labelStr = `parent_service="${PrometheusReporter.LABEL_PARENT_SERVICE_UNKNOWN}",name="my-operation"`
 
     expect(reporter.metrics()).to.be.equal(dedent`
       # HELP operation_duration_seconds Duration of operations in second
