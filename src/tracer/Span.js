@@ -153,7 +153,7 @@ class Span {
   */
   setTag (key, value) {
     assert(typeof key === 'string', 'key is required')
-    assert(value, 'value is required')
+    assert(value !== undefined, 'value is required')
 
     this._tags[key] = value
     return this

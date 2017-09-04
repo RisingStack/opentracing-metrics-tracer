@@ -128,25 +128,25 @@ operation_duration_seconds_count{parent_service="my-parent-service",name="my-ope
 
 ##### http_request_duration_seconds
 
-Measured only when the span is tagged with `HTTP_METHOD` or `HTTP_STATUS_CODE`.  
+Measured only when the span is tagged with `SPAN_KIND_RPC_SERVER` and any of `HTTP_URL`, `HTTP_METHOD` or `HTTP_STATUS_CODE`.  
 Sample output:
 ```
-# HELP http_request_duration_seconds Duration of HTTP requests in second
-# TYPE http_request_duration_seconds histogram
-http_request_duration_seconds_bucket{le="0.005",parent_service="my-parent-service",method="GET",code="200",name="http_request" 0
-http_request_duration_seconds_bucket{le="0.01",parent_service="my-parent-service",method="GET",code="200",name="http_request" 0
-http_request_duration_seconds_bucket{le="0.025",parent_service="my-parent-service",method="GET",code="200",name="http_request" 0
-http_request_duration_seconds_bucket{le="0.05",parent_service="my-parent-service",method="GET",code="200",name="http_request" 0
-http_request_duration_seconds_bucket{le="0.1",parent_service="my-parent-service",method="GET",code="200",name="http_request" 1
-http_request_duration_seconds_bucket{le="0.25",parent_service="my-parent-service",method="GET",code="200",name="http_request" 1
-http_request_duration_seconds_bucket{le="0.5",parent_service="my-parent-service",method="GET",code="200",name="http_request" 2
-http_request_duration_seconds_bucket{le="1",parent_service="my-parent-service",method="GET",code="200",name="http_request" 2
-http_request_duration_seconds_bucket{le="2.5",parent_service="my-parent-service",method="GET",code="200",name="http_request" 2
-http_request_duration_seconds_bucket{le="5",parent_service="my-parent-service",method="GET",code="200",name="http_request" 2
-http_request_duration_seconds_bucket{le="10",parent_service="my-parent-service",method="GET",code="200",name="http_request" 2
-http_request_duration_seconds_bucket{le="+Inf",parent_service="my-parent-service",method="GET",code="200",name="http_request" 2
-http_request_duration_seconds_sum{parent_service="my-parent-service",method="GET",code="200",name="http_request" 0.4
-http_request_duration_seconds_count{parent_service="my-parent-service",method="GET",code="200",name="http_request" 2
+# HELP http_request_handler_duration_seconds Duration of HTTP requests in second
+# TYPE http_request_handler_duration_seconds histogram
+http_request_handler_duration_seconds_bucket{le="0.005",parent_service="my-parent-service",method="GET",code="200",name="http_request" 0
+http_request_handler_duration_seconds_bucket{le="0.01",parent_service="my-parent-service",method="GET",code="200",name="http_request" 0
+http_request_handler_duration_seconds_bucket{le="0.025",parent_service="my-parent-service",method="GET",code="200",name="http_request" 0
+http_request_handler_duration_seconds_bucket{le="0.05",parent_service="my-parent-service",method="GET",code="200",name="http_request" 0
+http_request_handler_duration_seconds_bucket{le="0.1",parent_service="my-parent-service",method="GET",code="200",name="http_request" 1
+http_request_handler_duration_seconds_bucket{le="0.25",parent_service="my-parent-service",method="GET",code="200",name="http_request" 1
+http_request_handler_duration_seconds_bucket{le="0.5",parent_service="my-parent-service",method="GET",code="200",name="http_request" 2
+http_request_handler_duration_seconds_bucket{le="1",parent_service="my-parent-service",method="GET",code="200",name="http_request" 2
+http_request_handler_duration_seconds_bucket{le="2.5",parent_service="my-parent-service",method="GET",code="200",name="http_request" 2
+http_request_handler_duration_seconds_bucket{le="5",parent_service="my-parent-service",method="GET",code="200",name="http_request" 2
+http_request_handler_duration_seconds_bucket{le="10",parent_service="my-parent-service",method="GET",code="200",name="http_request" 2
+http_request_handler_duration_seconds_bucket{le="+Inf",parent_service="my-parent-service",method="GET",code="200",name="http_request" 2
+http_request_handler_duration_seconds_sum{parent_service="my-parent-service",method="GET",code="200",name="http_request" 0.4
+http_request_handler_duration_seconds_count{parent_service="my-parent-service",method="GET",code="200",name="http_request" 2
 ```
 
 ## Future and ideas

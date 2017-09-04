@@ -7,7 +7,7 @@ const Span = require('../tracer/Span')
 
 const DURATION_HISTOGRAM_BUCKETS = [0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2.5, 5, 10]
 const METRICS_NAME_OPERATION_DURATION_SECONDS = 'operation_duration_seconds'
-const METRICS_NAME_HTTP_REQUEST_DURATION_SECONDS = 'http_request_duration_seconds'
+const METRICS_NAME_HTTP_REQUEST_HANDLER_DURATION_SECONDS = 'http_request_handler_duration_seconds'
 
 /**
 * Observe span events and expose them in Prometheus metrics format
@@ -46,7 +46,8 @@ class PrometheusReporter {
     this._reportOperationFinish(span)
 
     // HTTP Request
-    if (span.getTag(Tags.HTTP_URL) || span.getTag(Tags.HTTP_METHOD) || span.getTag(Tags.HTTP_STATUS_CODE)) {
+    if (span.getTag(Tags.SPAN_KIND_RPC_SERVER) &&
+      (span.getTag(Tags.HTTP_URL) || span.getTag(Tags.HTTP_METHOD) || span.getTag(Tags.HTTP_STATUS_CODE))) {
       this._reportHttpRequestFinish(span)
     }
   }
@@ -114,11 +115,11 @@ class PrometheusReporter {
   * @return {Prometheus.Histogram} httpRequestDurationSeconds
   */
   _metricshttpRequestDurationSeconds () {
-    let httpRequestDurationSeconds = this._registry.getSingleMetric(METRICS_NAME_HTTP_REQUEST_DURATION_SECONDS)
+    let httpRequestDurationSeconds = this._registry.getSingleMetric(METRICS_NAME_HTTP_REQUEST_HANDLER_DURATION_SECONDS)
 
     if (!httpRequestDurationSeconds) {
       httpRequestDurationSeconds = new Prometheus.Histogram({
-        name: METRICS_NAME_HTTP_REQUEST_DURATION_SECONDS,
+        name: METRICS_NAME_HTTP_REQUEST_HANDLER_DURATION_SECONDS,
         help: 'Duration of HTTP requests in second',
         labelNames: ['parent_service', 'method', 'code'],
         buckets: DURATION_HISTOGRAM_BUCKETS,

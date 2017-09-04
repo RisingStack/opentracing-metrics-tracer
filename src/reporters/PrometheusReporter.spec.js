@@ -109,6 +109,7 @@ describe('reporter/PrometheusReporter', () => {
       const span = tracer.startSpan('http_request')
       span.setTag(Tags.HTTP_METHOD, 'GET')
       span.setTag(Tags.HTTP_STATUS_CODE, 200)
+      span.setTag(Tags.SPAN_KIND_RPC_SERVER, true)
       clock.tick(100)
       span.finish()
 
@@ -141,6 +142,7 @@ describe('reporter/PrometheusReporter', () => {
       const span1 = tracer.startSpan('http_request', { childOf: parentSpan1 })
       span1.setTag(Tags.HTTP_METHOD, 'GET')
       span1.setTag(Tags.HTTP_STATUS_CODE, 200)
+      span1.setTag(Tags.SPAN_KIND_RPC_SERVER, true)
       clock.tick(100)
       span1.finish()
 
@@ -148,6 +150,7 @@ describe('reporter/PrometheusReporter', () => {
       const span2 = tracer.startSpan('http_request', { childOf: parentSpan2 })
       span2.setTag(Tags.HTTP_METHOD, 'POST')
       span2.setTag(Tags.HTTP_STATUS_CODE, 201)
+      span2.setTag(Tags.SPAN_KIND_RPC_SERVER, true)
       clock.tick(300)
       span2.finish()
 
@@ -161,6 +164,34 @@ describe('reporter/PrometheusReporter', () => {
       expect(metricsStub.observe).to.have.callCount(2)
       expect(metricsStub.observe).to.be.calledWith(0.1)
       expect(metricsStub.observe).to.be.calledWith(0.3)
+    })
+
+    it('should skip client HTTP requests', function () {
+      // init
+      const prometheusReporter = new PrometheusReporter()
+      const httpRequestDurationSeconds = prometheusReporter._metricshttpRequestDurationSeconds()
+
+      const metricsStub = {
+        observe: this.sandbox.spy()
+      }
+
+      this.sandbox.stub(httpRequestDurationSeconds, 'labels').callsFake(() => metricsStub)
+
+      // generate data
+      const tracer = new Tracer('service')
+
+      const span = tracer.startSpan('http_request')
+      span.setTag(Tags.HTTP_METHOD, 'GET')
+      span.setTag(Tags.HTTP_STATUS_CODE, 200)
+      span.setTag(Tags.SPAN_KIND_RPC_SERVER, false) // or not set
+      clock.tick(100)
+      span.finish()
+
+      prometheusReporter.reportFinish(span)
+
+      // assert
+      expect(httpRequestDurationSeconds.labels).to.have.callCount(0)
+      expect(metricsStub.observe).to.have.callCount(0)
     })
   })
 
