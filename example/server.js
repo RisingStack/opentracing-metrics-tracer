@@ -34,16 +34,17 @@ const server = http.createServer((req, res) => {
   }
 
   // My child operation like DB access
-  const operationSpan = metricsTracer.startSpan('my_operation', {
+  const childOperationSpan = metricsTracer.startSpan('my_operation', {
     childOf: requestSpan
   })
 
   setTimeout(() => {
-    operationSpan.finish()
-    requestSpan.finish()
+    childOperationSpan.finish()
 
     res.writeHead(200, headers)
     res.end('Ok')
+
+    requestSpan.finish()
   }, 30)
 })
 
