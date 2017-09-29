@@ -1,3 +1,12 @@
+<a name="2.1.0"></a>
+## 2.1.0 (2017-09-29)
+
+
+#### Features
+
+* **tracer:** add ignoreTags option ([acd7c58a](git+https://github.com/RisingStack/opentracing-metrics-tracer.git/commit/acd7c58a))
+
+
 <a name="2.0.1"></a>
 ### 2.0.1 (2017-09-04)
 
