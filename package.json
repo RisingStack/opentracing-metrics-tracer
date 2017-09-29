@@ -20,19 +20,19 @@
   "homepage": "https://github.com/RisingStack/opentracing-metrics-tracer#readme",
   "dependencies": {
     "opentracing": "0.14.1",
-    "prom-client": "10.1.0",
+    "prom-client": "10.1.1",
     "uuid": "3.1.0"
   },
   "devDependencies": {
     "chai": "4.1.2",
     "dedent": "0.7.0",
-    "eslint": "4.6.1",
+    "eslint": "4.7.2",
     "eslint-config-airbnb-base": "11.0.0",
     "eslint-plugin-import": "2.7.0",
     "eslint-plugin-promise": "3.5.0",
-    "mocha": "3.5.0",
+    "mocha": "3.5.3",
     "nyc": "11.2.1",
     "sinon": "3.2.1",
-    "sinon-chai": "2.13.0"
+    "sinon-chai": "2.14.0"
   }
 }
