@@ -83,7 +83,11 @@ curl http://localhost:3000/metrics
 
 [OpenTracing](https://github.com/opentracing/opentracing-javascript) compatible tracer, for the complete API check out the official [documentation](https://opentracing-javascript.surge.sh/).
 
-### new Tracer.PrometheusReporter()
+### new Tracer.PrometheusReporter([opts])
+
+- **opts** *Object*, *optional*
+- **opts.ignoreTags** *Object*, *optional*
+  - Example: `{ ignoreTags: { [Tags.HTTP_URL]: /\/metrics$/ } }` to ignore Prometheus scraper
 
 Creates a new Prometheus reporter.
 

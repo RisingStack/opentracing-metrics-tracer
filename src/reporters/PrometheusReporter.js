@@ -29,10 +29,15 @@ class PrometheusReporter {
 
   /**
   * @constructor
+  * @param {Object} [options={}]
+  * @param {Object} [options.ignoreTags={}]
   * @returns {PrometheusReporter}
   */
-  constructor () {
+  constructor ({ ignoreTags = {} } = {}) {
     this._registry = new Prometheus.Registry()
+    this._options = {
+      ignoreTags
+    }
 
     // Initialize metrics
     this._metricsOperationDurationSeconds()
@@ -54,6 +59,16 @@ class PrometheusReporter {
   */
   reportFinish (span) {
     assert(span instanceof Span, 'span is required')
+
+    // Ignore by tag value
+    const isIgnored = Object.entries(this._options.ignoreTags).some(([tagKey, regexp]) => {
+      const tagValue = span.getTag(tagKey)
+      return tagValue && tagValue.match(regexp)
+    })
+
+    if (isIgnored) {
+      return
+    }
 
     // Operation metrics
     this._reportOperationFinish(span)

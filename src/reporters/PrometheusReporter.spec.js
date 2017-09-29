@@ -27,6 +27,36 @@ describe('reporter/PrometheusReporter', () => {
   })
 
   describe('#reportFinish', () => {
+    it('should skip operation metrics by tag value', function () {
+      // init
+      const prometheusReporter = new PrometheusReporter({
+        ignoreTags: {
+          [Tags.HTTP_URL]: /foo/
+        }
+      })
+      const metricsOperationDurationSeconds = prometheusReporter._metricsOperationDurationSeconds()
+
+      const metricsStub = {
+        observe: this.sandbox.spy()
+      }
+
+      this.sandbox.stub(metricsOperationDurationSeconds, 'labels').callsFake(() => metricsStub)
+
+      // generate data
+      const tracer = new Tracer('service')
+
+      const span = tracer.startSpan('my-operation')
+      span.setTag(Tags.HTTP_URL, 'http://127.0.0.1/foo')
+      clock.tick(100)
+      span.finish()
+
+      prometheusReporter.reportFinish(span)
+
+      // assert
+      expect(metricsOperationDurationSeconds.labels).to.have.callCount(0)
+      expect(metricsStub.observe).to.have.callCount(0)
+    })
+
     it('should observe operation metrics without parent', function () {
       // init
       const prometheusReporter = new PrometheusReporter()
