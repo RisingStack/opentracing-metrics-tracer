@@ -113,7 +113,7 @@ describe('e2e: PrometheusReporter', () => {
       span1.setTag(Tags.HTTP_URL, 'http://127.0.0.1/foo')
       span1.setTag(Tags.HTTP_METHOD, 'GET')
       span1.setTag(Tags.HTTP_STATUS_CODE, 200)
-      span1.setTag(Tags.SPAN_KIND_RPC_SERVER, true)
+      span1.setTag(Tags.SPAN_KIND, Tags.SPAN_KIND_RPC_SERVER)
       clock.tick(100)
       span1.finish()
 
@@ -122,7 +122,7 @@ describe('e2e: PrometheusReporter', () => {
       span2.setTag(Tags.HTTP_URL, 'http://127.0.0.1/bar')
       span2.setTag(Tags.HTTP_METHOD, 'GET')
       span2.setTag(Tags.HTTP_STATUS_CODE, 200)
-      span2.setTag(Tags.SPAN_KIND_RPC_SERVER, true)
+      span2.setTag(Tags.SPAN_KIND, Tags.SPAN_KIND_RPC_SERVER)
       clock.tick(300)
       span2.finish()
 

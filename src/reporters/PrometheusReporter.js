@@ -74,7 +74,7 @@ class PrometheusReporter {
     this._reportOperationFinish(span)
 
     // HTTP Request
-    if (span.getTag(Tags.SPAN_KIND_RPC_SERVER) &&
+    if (span.getTag(Tags.SPAN_KIND) === Tags.SPAN_KIND_RPC_SERVER &&
       (span.getTag(Tags.HTTP_URL) || span.getTag(Tags.HTTP_METHOD) || span.getTag(Tags.HTTP_STATUS_CODE))) {
       this._reportHttpRequestFinish(span)
     }
